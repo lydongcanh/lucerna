@@ -1,17 +1,18 @@
 [project]
 name = "lucerna"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "Ted Ly",email = "ted.ly@ansarada.com"}
-]
+description = "LLM observability service"
+authors = [{name = "Ted Ly", email = "lydongcanh@gmail.com"}]
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "fastapi (>=0.117.1,<0.118.0)",
+    "uvicorn[standard] (>=0.37.0,<0.38.0)",
+    "pydantic (>=2.11.9,<3.0.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "lucerna", from = "src"}]
+packages = [{include = "service_host", from = "src"}]
 
 
 [build-system]
