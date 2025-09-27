@@ -1,3 +1,3 @@
 """
-The entry point of this service.
+Entry points of this service.
 """

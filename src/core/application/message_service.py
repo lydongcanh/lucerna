@@ -31,7 +31,25 @@ class MessageService:
 
     @staticmethod
     async def get_messages(**filters):
-        return await SqlLite.filter_by(MessageDB, **filters)
+        db_filters = {}
+
+        # Handle time range mapping
+        if "start_date" in filters:
+            start = filters.pop("start_date")
+            if start:
+                db_filters["created_at__gte"] = datetime.fromisoformat(start)
+
+        if "end_date" in filters:
+            end = filters.pop("end_date")
+            if end:
+                db_filters["created_at__lte"] = datetime.fromisoformat(end)
+
+        # Keep remaining filters (user_id, aggregate_id, etc.)
+        for key, value in filters.items():
+            if value:
+                db_filters[key] = value
+
+        return await SqlLite.filter_by(MessageDB, **db_filters)
 
     @staticmethod
     def _count_message_tokens(content: str, model: str) -> int:

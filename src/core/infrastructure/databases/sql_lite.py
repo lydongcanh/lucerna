@@ -1,7 +1,8 @@
 import os
 import pathlib
+from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import declarative_base
 
@@ -19,8 +20,7 @@ Base = declarative_base()
 
 
 async def init_db() -> None:
-    # Import models so metadata is populated
-    from core.models.message import Base
+    from core.models.message import Base  # import models so metadata is populated
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -38,7 +38,50 @@ async def get_by_id(model, id_: str):
 
 
 async def filter_by(model, **kwargs):
+    """
+    Supports both exact filters and extended operators:
+    - field=value          → equality
+    - field__gte=value     → greater than or equal
+    - field__lte=value     → less than or equal
+    - field__gt=value      → greater than
+    - field__lt=value      → less than
+    - field__ne=value      → not equal
+    - field__in=[...]      → IN clause
+    """
+
     async with async_session() as session:
-        stmt = select(model).filter_by(**kwargs)
+        conditions = []
+        for key, value in kwargs.items():
+            if value is None:
+                continue
+
+            if "__" in key:
+                field, op = key.split("__", 1)
+                column = getattr(model, field)
+
+                # Auto convert string dates if used for datetime fields
+                if isinstance(value, str) and field == "created_at":
+                    value = datetime.fromisoformat(value)
+
+                if op == "gte":
+                    conditions.append(column >= value)
+                elif op == "lte":
+                    conditions.append(column <= value)
+                elif op == "gt":
+                    conditions.append(column > value)
+                elif op == "lt":
+                    conditions.append(column < value)
+                elif op == "ne":
+                    conditions.append(column != value)
+                elif op == "in" and isinstance(value, (list, tuple)):
+                    conditions.append(column.in_(value))
+            else:
+                column = getattr(model, key)
+                conditions.append(column == value)
+
+        stmt = select(model)
+        if conditions:
+            stmt = stmt.filter(and_(*conditions))
+
         result = await session.execute(stmt)
         return result.scalars().all()
