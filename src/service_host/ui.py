@@ -1,4 +1,3 @@
-# src/service_host/ui.py
 from datetime import datetime, timedelta, timezone
 
 import dash
@@ -47,7 +46,7 @@ def fetch_messages(params=None) -> pd.DataFrame:
 
 # --- App ---
 app = dash.Dash(
-    __name__, external_stylesheets=[dbc.themes.SPACELAB], title="Lucerna Dashboard"
+    __name__, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Lucerna Dashboard"
 )
 
 
@@ -167,7 +166,6 @@ app.layout = dbc.Container(
                                         {"name": "Content", "id": "content"},
                                         {"name": "Role", "id": "role"},
                                         {"name": "Model", "id": "llm_model"},
-                                        {"name": "Response", "id": "response"},
                                         {"name": "Total tokens", "id": "token_count"},
                                     ],
                                     page_size=5,

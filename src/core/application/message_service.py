@@ -11,7 +11,7 @@ class MessageService:
     @staticmethod
     async def create_message(message_in: MessageIn) -> MessageOut:
         message = MessageDB(
-            id=str(uuid.uuid4()),
+            id=str(uuid.uuid4().hex),
             user_id=message_in.user_id,
             aggregate_id=message_in.aggregate_id,
             llm_model=message_in.llm_model,

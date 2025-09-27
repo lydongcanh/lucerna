@@ -59,10 +59,6 @@ async def filter_by(model, **kwargs):
                 field, op = key.split("__", 1)
                 column = getattr(model, field)
 
-                # Auto convert string dates if used for datetime fields
-                if isinstance(value, str) and field == "created_at":
-                    value = datetime.fromisoformat(value)
-
                 if op == "gte":
                     conditions.append(column >= value)
                 elif op == "lte":
