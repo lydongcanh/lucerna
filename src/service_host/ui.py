@@ -30,6 +30,7 @@ def fetch_messages(params=None) -> pd.DataFrame:
     response = requests.get(f"{API_BASE}/messages", params=params or {})
 
     if response.status_code != 200:
+        print("Error fetching messages:", response.text)
         return pd.DataFrame()
 
     data = response.json()

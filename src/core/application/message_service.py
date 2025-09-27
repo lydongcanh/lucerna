@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import tiktoken
 
 from core.infrastructure import SqlLite
-from core.models.message import MessageDB, MessageIn, MessageOut
+from core.models.message import MessageDB, MessageIn, MessageOut, MessageQueryParams
 
 
 class MessageService:
@@ -30,24 +30,30 @@ class MessageService:
         return await SqlLite.get_by_id(MessageDB, message_id)
 
     @staticmethod
-    async def get_messages(**filters):
-        db_filters = {}
+    async def get_messages(params: MessageQueryParams):
+        db_filters: dict[str, object] = {}
 
-        # Handle time range mapping
-        if "start_date" in filters:
-            start = filters.pop("start_date")
-            if start:
-                db_filters["created_at__gte"] = datetime.fromisoformat(start)
+        if params.start_date:
+            start = (
+                params.start_date.replace(tzinfo=timezone.utc)
+                if params.start_date.tzinfo is None
+                else params.start_date.astimezone(timezone.utc)
+            )
+            db_filters["created_at__gte"] = start
 
-        if "end_date" in filters:
-            end = filters.pop("end_date")
-            if end:
-                db_filters["created_at__lte"] = datetime.fromisoformat(end)
+        if params.end_date:
+            end = (
+                params.end_date.replace(tzinfo=timezone.utc)
+                if params.end_date.tzinfo is None
+                else params.end_date.astimezone(timezone.utc)
+            )
+            db_filters["created_at__lte"] = end
 
-        # Keep remaining filters (user_id, aggregate_id, etc.)
-        for key, value in filters.items():
-            if value:
-                db_filters[key] = value
+        if params.user_id:
+            db_filters["user_id"] = params.user_id
+
+        if params.aggregate_id:
+            db_filters["aggregate_id"] = params.aggregate_id
 
         return await SqlLite.filter_by(MessageDB, **db_filters)
 

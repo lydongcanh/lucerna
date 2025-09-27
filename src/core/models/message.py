@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
+from fastapi import Query
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.orm import declarative_base
@@ -35,3 +36,12 @@ class MessageOut(MessageIn):
     id: str
     token_count: int
     created_at: datetime
+
+
+class MessageQueryParams(BaseModel):
+    start_date: Optional[datetime] = Query(
+        None, description="Start of time range (UTC)"
+    )
+    end_date: Optional[datetime] = Query(None, description="End of time range (UTC)")
+    user_id: Optional[str] = Query(None, description="Filter by user id")
+    aggregate_id: Optional[str] = Query(None, description="Filter by aggregation id")
