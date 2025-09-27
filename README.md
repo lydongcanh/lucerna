@@ -2,11 +2,17 @@
 
 ## Development steps:
 
+### Core
 ```bash
 # Start this service
 poetry run uvicorn service_host.main:app --reload --app-dir=src
 ```
 
+Access the application at:
+- :8000/docs (Swagger like UI)
+- :8000/redoc (cleaner, more doc-focused UI)
+  
+### Others
 ```bash
 # Configure poetry to use venv inside project
 poetry config virtualenvs.in-project true

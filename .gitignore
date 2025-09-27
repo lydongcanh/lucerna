@@ -113,3 +113,8 @@ secrets/
 .ipynb_checkpoints
 profile_default/
 ipython_config.py
+
+# --- SQLite ---
+*.db
+*.sqlite3
+*.sqlite

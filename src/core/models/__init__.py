@@ -2,8 +2,9 @@
 Models for the application.
 """
 
-from .llm_message import LLMMessage
+from .message import MessageIn, MessageOut
 
 __all__ = [
-    "LLMMessage"
+    "MessageIn",
+    "MessageOut"
 ]
