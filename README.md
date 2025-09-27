@@ -2,22 +2,14 @@
 
 ## Development
 
-### API
+### Run the app
 ```bash
-# Start the REST Api server
-poetry run uvicorn service_host.api:app --reload --app-dir=src
+uvicorn service_host.api:app --host 0.0.0.0 --port 8000
 ```
 
 - http://127.0.0.1:8000/docs (Swagger like UI)
 - http://127.0.0.1:8000/redoc (cleaner, more doc-focused UI)
-  
-### UI
-```bash
-# Start the dashboard
-poetry run python src/service_host/ui.py
-```
-
-- http://127.0.0.1:8050
+- http://127.0.0.1:8000/dashboard (simple dashboard)
   
 ### Others
 
