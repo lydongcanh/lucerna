@@ -1,6 +1,7 @@
 import uuid
-import tiktoken
 from datetime import datetime, timezone
+
+import tiktoken
 
 from core.infrastructure import SqlLite
 from core.models.message import MessageDB, MessageIn, MessageOut
@@ -16,22 +17,21 @@ class MessageService:
             llm_model=message_in.llm_model,
             role=message_in.role,
             content=message_in.content,
-            token_count=MessageService._count_message_tokens(message_in.content, message_in.llm_model),
+            token_count=MessageService._count_message_tokens(
+                message_in.content, message_in.llm_model
+            ),
             created_at=datetime.now(timezone.utc),
         )
         await SqlLite.save(message)
         return message
 
-
     @staticmethod
     async def get_message(message_id: str):
         return await SqlLite.get_by_id(MessageDB, message_id)
 
-
     @staticmethod
     async def get_messages(**filters):
         return await SqlLite.filter_by(MessageDB, **filters)
-
 
     @staticmethod
     def _count_message_tokens(content: str, model: str) -> int:

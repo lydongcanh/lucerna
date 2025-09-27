@@ -1,16 +1,14 @@
 # Lucerna
 
-## Development steps:
-
-### Core
+## Development
 ```bash
 # Start this service
 poetry run uvicorn service_host.main:app --reload --app-dir=src
 ```
 
-Access the application at:
-- :8000/docs (Swagger like UI)
-- :8000/redoc (cleaner, more doc-focused UI)
+### API
+- http://127.0.0.1:8000/docs (Swagger like UI)
+- http://127.0.0.1:8000/redoc (cleaner, more doc-focused UI)
   
 ### Others
 ```bash

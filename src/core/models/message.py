@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, DateTime, Text
-from sqlalchemy.orm import declarative_base
-from pydantic import BaseModel
 from typing import Optional
 
+from pydantic import BaseModel
+from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy.orm import declarative_base
+
 Base = declarative_base()
+
 
 class MessageDB(Base):
     __tablename__ = "messages"
@@ -16,7 +18,9 @@ class MessageDB(Base):
     role = Column(String, nullable=False)
     content = Column(Text, nullable=False)
     token_count = Column(Integer, default=0)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+    created_at = Column(
+        DateTime, default=lambda: datetime.now(timezone.utc), index=True
+    )
 
 
 class MessageIn(BaseModel):
